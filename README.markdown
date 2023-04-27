@@ -1,6 +1,9 @@
 # Gibber #
 Gibber is a live coding environment for the web browser, combining music synthesis and sequencing with ray-marching 3d graphics.
 
+## Using code from this repository ## 
+Gibber doesn't save your code - code has been kept in this repository. To use, open Gibber locally or on the web, and then copy the code into the workspace. 
+
 ## Playgrounds ##
 No installation needed, play it on the web!
 
