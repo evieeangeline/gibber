@@ -1,39 +1,47 @@
-//settings
-Clock.bpm = 170
-Theory.root = 'c#5' 
-Theory.mode = 'dorian' 
-
-verb = Reverb( 'space' ).bus()
-delay = Delay( '1/8').bus()
-
-Theory.degree.seq( ['i', '-iv', '-v'], [8, 4, 4])
-
-//pad 
-pad = Synth[4]('rhodes', {decay:8, gain:.15})
-pad.fx[0].connect( verb, 1) 
-pad.chord.seq([[0,2,4,6]], 4) 
-
-
-//drums 
-drumsA = Drums()
-drumsA.fx.add( Distortion({ pregain:1.5, postgain:1 }) )
+Clock.bpm = 120
+Theory.root = 'f#4'
+Theory.mode = 'phrygian'
  
-drumsA.tidal('kd [kd, sd]  kd [kd sd] ')
+verb  = Reverb( 'space' ).bus() 
+delay = Delay( '1/6' ).bus()
 
-//hat
-hat = Hat({ gain:.075 })
-hat.trigger.seq( [1,.5], [1/8, 1/16] )
-hat.decay = gen( .02 + cycle( beats(16) * 4 ) * .0125 )
-hat.fx.add( Distortion({ pregain:100, postgain:.1 }) )
+Theory.degree.seq( ['i','-iv','-V'], [8,4,4] )
 
+// Bass A - acidey synthey bass, with moving Q and cuttoff. 
+// (Q determines sharpness) 
 
-//bass
-bassA = Synth('acidBass2', { saturation:20, gain:.3 })
+Theory.root = 'd#4' // OR use d#5 for a mid synth
+acidBass = Synth('acidBass2', { saturation:20, gain:.3 })
   .connect( delay, .25 )
   .connect( verb, .125 )
+ 
+acidBass.note.tidal( '0 0 0 0 4 6 0 ~ 0 ~ 7 -7 ~ 0 -7 0' )
+acidBass.decay.seq( [1/32, 1/16], 1/2 )
+acidBass.glide.seq( [1,1,100,100 ], 1/4 )
+acidBass.Q = gen( 0.5 + cycle(0.1) * 0.49 )
+acidBass.cutoff = gen( 0.5 + cycle(0.07) * 0.45 )  
+    
+acidBass.stop()
 
 
-bassA.cutoff = 0.2
-bassA.cutoff = gen( 0.4 + cycle(0.06) *0.2)
+// Bass B - dark and stormy bass
 
-bassA.note.tidal( '0 ~ ~ 0 ~ ~ 0 ~ -2 ~ ~ -2 ~ ~ 3 -3' )
+Theory.root = 'd#5' 
+darkBass = Monosynth( 'bassPad', { decay:4 })
+  .connect( verb, .5 )
+  .note.seq( [0, 0, -1, -1, -2, -2, -4, -4], [0.25, 3.75] )
+ 
+darkBass.stop()
+
+
+// Bass C - FM Synth 
+
+fmBass = FM('bass')
+
+fmBass.note.seq( [0,-7], [1/8])
+
+fmBass.decay = gen( 0.5 + cycle(0.1) *1)
+fmBass.attack = gen( 0.4 + cycle(0.06) *0)
+fmBass.cutoff = 0.2
+
+fmBass.stop()
